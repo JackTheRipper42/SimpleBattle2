@@ -23,9 +23,9 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    protected virtual void OnTriggerEnter(Collider other)
+    protected virtual void OnCollisionEnter(Collision collision)
     {
-        var health = other.GetComponentInParent<Health>();
+        var health = collision.collider.GetComponentInParent<Health>();
         if (health != null)
         {
             health.Hit(Damage);
