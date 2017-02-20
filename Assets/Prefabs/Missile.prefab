@@ -122,7 +122,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 64
   m_CollisionDetection: 0
 --- !u!114 &114000011561108292
 MonoBehaviour:
@@ -139,6 +139,7 @@ MonoBehaviour:
   Speed: 30
   MaxFlightTime: 20
   MaxRotationDelta: 10
+  Proportial: 4
   Target: {fileID: 0}
 --- !u!136 &136000011255900298
 CapsuleCollider:
