@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class Launcher : MonoBehaviour
+public class Launcher : Subsystem
 {
     public float ReleadTime = 2f;
     public GameObject MissilePrefab;
@@ -11,8 +11,9 @@ public class Launcher : MonoBehaviour
     private Ship _self;
     private Missile _referenceData;
 
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
         _lastShot = float.MinValue;
         _self = GetComponentInParent<Ship>();
         _referenceData = MissilePrefab.GetComponent<Missile>();
@@ -45,6 +46,7 @@ public class Launcher : MonoBehaviour
 
             var missile = obj.GetComponent<Missile>();
             missile.Target = target.GetComponentInParent<Rigidbody>();
+            Physics.IgnoreCollision(GetComponent<Collider>(), obj.GetComponent<Collider>());
         }
     }
 }

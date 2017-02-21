@@ -25,11 +25,24 @@ public class Projectile : MonoBehaviour
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        var health = collision.collider.GetComponentInParent<Health>();
-        if (health != null)
+        foreach (var contactPoint in collision.contacts)
         {
-            health.Hit(Damage);
-            Destroy(gameObject);
+            Debug.DrawRay(contactPoint.point, contactPoint.normal, Color.magenta, 2f);
+        }
+
+        var subsystem = collision.collider.GetComponentInParent<Subsystem>();
+
+        if (subsystem != null)
+        {
+            if (subsystem.IsAlive)
+            {
+                subsystem.Hit(Damage);
+                Destroy(gameObject);
+            }
+            else
+            {
+                Physics.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider>());
+            }
         }
     }
 }

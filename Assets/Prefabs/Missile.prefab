@@ -135,11 +135,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2889e06bde7acb45b38015208741c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 1
+  Damage: 20
   Speed: 30
   MaxFlightTime: 20
-  MaxRotationDelta: 10
-  Proportial: 4
+  Proportional: 4
+  MaxAcceleration: 50
+  MaxLockAngle: 70
   Target: {fileID: 0}
 --- !u!136 &136000011255900298
 CapsuleCollider:

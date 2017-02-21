@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
-public class Health : MonoBehaviour
+[RequireComponent(typeof(Collider))]
+public class Subsystem : MonoBehaviour
 {
     public float MaxHealth = 100f;
 
     private float _currentHealth;
+
+    public bool IsVital;
 
     public bool IsAlive
     {
@@ -22,7 +25,14 @@ public class Health : MonoBehaviour
         _currentHealth = Mathf.Max(0, _currentHealth);
         if (!IsAlive)
         {
-            Destroy(gameObject);
+            if (IsVital)
+            {
+                Destroy(GetComponentInParent<Ship>().gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

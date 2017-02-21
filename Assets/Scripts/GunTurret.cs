@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-public class GunTurret : MonoBehaviour
+public class GunTurret : Subsystem
 {
     public float ReleadTime = 2f;
     public GameObject ProjectilePrefab;
@@ -12,8 +12,9 @@ public class GunTurret : MonoBehaviour
     private Ship _self;
     private Projectile _referenceData;
 
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
         _lastShot = float.MinValue;
         _self = GetComponentInParent<Ship>();
         _referenceData = ProjectilePrefab.GetComponent<Projectile>();
