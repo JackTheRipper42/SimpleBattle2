@@ -48,35 +48,62 @@ public class GunTurret : Subsystem
 
     private bool TryCalculatePointOfImpact(Rigidbody target, out Vector3 targetPosition)
     {
-        var flightTime = 0f;
-        var timeDelta = _referenceData.MaxFlightTime / 10000f;
-        var velocity = target.velocity.magnitude;
-        var angularVelocity = target.angularVelocity.y;
-        var heading = target.rotation.eulerAngles.y;
+        var impactTime = CalculateImpactTime(target);
 
-        targetPosition = target.position;
-
-        do
+        if (impactTime > 0 && impactTime <= _referenceData.MaxFlightTime)
         {
-            flightTime += timeDelta;
-
-            var velocityVector = Vector3.forward*velocity*timeDelta;
-
-            // no exact calculation just an approximation
-            var newTargetPosition1 = targetPosition + Quaternion.Euler(0, heading, 0)* velocityVector;
-            heading += angularVelocity * timeDelta;
-            var newTargetPosition2 = targetPosition + Quaternion.Euler(0, heading, 0)* velocityVector;
-
-            targetPosition = (newTargetPosition1 + newTargetPosition2)*0.5f;
-
-            var distance = (targetPosition - transform.position).magnitude;
-            var projectileRangeSquare = _referenceData.Speed*flightTime;
-
-            if (Mathf.Abs(distance - projectileRangeSquare) < 0.1f)
-            {
-                return true;
-            }
-        } while (flightTime < _referenceData.MaxFlightTime);
+            targetPosition = target.position + target.velocity*impactTime;
+            return true;
+        }
+        targetPosition = new Vector3();
         return false;
+    }
+
+    private float CalculateImpactTime(Rigidbody target)
+    {
+        var relativePosition = target.position - transform.position;
+
+        var a = target.velocity.sqrMagnitude - _referenceData.Speed*_referenceData.Speed;
+        var b = 2f*Vector3.Dot(relativePosition, target.velocity);
+        var c = relativePosition.sqrMagnitude;
+
+        if (Mathf.Abs(a) < 0.0001f)
+        {
+            if (Mathf.Abs(b) < 0.0001f)
+            {
+                return float.NaN;
+            }
+            return -c/b;
+        }
+
+        var p = b/a;
+        var q = c/a;
+
+        var rootPart = p*p/4f - q;
+
+        if (rootPart < 0)
+        {
+            return float.NaN;
+        }
+
+        var x1 = -p/2 + Mathf.Sqrt(rootPart);
+        var x2 = -p/2 - Mathf.Sqrt(rootPart);
+
+        var minSolution = float.MaxValue;
+        if (x1 > 0 && x1 < minSolution)
+        {
+            minSolution = x1;
+        }
+        if (x2 > 0 && x1 < minSolution)
+        {
+            minSolution = x2;
+        }
+
+        if (minSolution < float.MaxValue)
+        {
+            return minSolution;
+        }
+
+        return float.NaN;
     }
 }
