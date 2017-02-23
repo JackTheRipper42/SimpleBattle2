@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012174598936}
   - 33: {fileID: 33000012522596976}
-  - 135: {fileID: 135000010367294600}
   - 23: {fileID: 23000011976038586}
   m_Layer: 8
   m_Name: Sphere
@@ -38,8 +37,11 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012785905730}
   - 54: {fileID: 54000012437386656}
-  - 114: {fileID: 114000013515625778}
   - 135: {fileID: 135000013222934122}
+  - 114: {fileID: 114000012614585154}
+  - 114: {fileID: 114000010446280960}
+  - 114: {fileID: 114000010666567902}
+  - 114: {fileID: 114000013316046880}
   m_Layer: 8
   m_Name: Bullet
   m_TagString: Untagged
@@ -125,7 +127,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &114000013515625778
+--- !u!114 &114000010446280960
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -133,24 +135,51 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000010637999912}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0f39e86f2ddbaf46be4c4d650abcafe, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d862f3ea5ef7a344a0a72a6b1ebee9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 10
-  Speed: 60
-  MaxFlightTime: 20
---- !u!135 &135000010367294600
-SphereCollider:
+  FuseTime: 0
+--- !u!114 &114000010666567902
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010127264482}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 1000010637999912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85558a5ed79cb0b44a04ce40c74a786d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 10
+  ExplosionDamage: 10
+  ExplosionRange: 6
+  ShipLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
+--- !u!114 &114000012614585154
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010637999912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0831d535097f66469c5fbe74c81c777, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 12
+  MaxFlightTime: 20
+--- !u!114 &114000013316046880
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010637999912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b2318f7fde233c438e7648ba65b28d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!135 &135000013222934122
 SphereCollider:
   m_ObjectHideFlags: 1

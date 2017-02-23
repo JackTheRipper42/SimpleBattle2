@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -10,14 +9,14 @@ public class GunTurret : Subsystem
 
     private float _lastShot;
     private Ship _self;
-    private Projectile _referenceData;
+    private FlightGuidance _referenceData;
 
     protected override void Start()
     {
         base.Start();
         _lastShot = float.MinValue;
         _self = GetComponentInParent<Ship>();
-        _referenceData = ProjectilePrefab.GetComponent<Projectile>();
+        _referenceData = ProjectilePrefab.GetComponent<FlightGuidance>();
     }
 
     protected virtual void Update()
@@ -35,20 +34,26 @@ public class GunTurret : Subsystem
         if (target != null)
         {
             Vector3 aimingPoint;
-            if (TryCalculatePointOfImpact(target.GetComponent<Rigidbody>(), out aimingPoint))
+            float impactTime;
+            if (TryCalculatePointOfImpact(target.GetComponent<Rigidbody>(), out aimingPoint, out impactTime))
             {
                 _lastShot = Time.time;
-                Instantiate(
-                    ProjectilePrefab, transform.position,
-                    Quaternion.LookRotation(aimingPoint - transform.position));
+                var obj = Instantiate(ProjectilePrefab);
+                obj.transform.position = transform.position;
+                obj.transform.rotation = Quaternion.LookRotation(aimingPoint - transform.position);
+                var timeFuse = obj.GetComponent<TimeFuse>();
+                if (timeFuse != null)
+                {
+                    timeFuse.FuseTime = impactTime;
+                }
                 Debug.DrawLine(transform.position, aimingPoint, Color.red, ReleadTime);
             }
         }
     }
 
-    private bool TryCalculatePointOfImpact(Rigidbody target, out Vector3 targetPosition)
+    private bool TryCalculatePointOfImpact(Rigidbody target, out Vector3 targetPosition, out float impactTime)
     {
-        var impactTime = CalculateImpactTime(target);
+        impactTime = CalculateImpactTime(target);
 
         if (impactTime > 0 && impactTime <= _referenceData.MaxFlightTime)
         {

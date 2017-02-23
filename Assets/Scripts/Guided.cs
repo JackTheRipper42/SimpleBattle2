@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Missile : Projectile
+public class Guided : FlightGuidance
 {
     public float Proportional = 4f;
     public float MaxAcceleration = 50;
     public float MaxLockAngle = 70f;
     public Rigidbody Target;
+
+    protected override void Start()
+    {
+        GetComponent<Rigidbody>().velocity = transform.forward * Speed;
+    }
 
     protected virtual void FixedUpdate()
     {

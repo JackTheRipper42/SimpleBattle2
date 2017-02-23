@@ -9,14 +9,14 @@ public class Launcher : Subsystem
 
     private float _lastShot;
     private Ship _self;
-    private Missile _referenceData;
+    private Guided _referenceData;
 
     protected override void Start()
     {
         base.Start();
         _lastShot = float.MinValue;
         _self = GetComponentInParent<Ship>();
-        _referenceData = MissilePrefab.GetComponent<Missile>();
+        _referenceData = MissilePrefab.GetComponent<Guided>();
     }
 
     protected virtual void Update()
@@ -37,15 +37,13 @@ public class Launcher : Subsystem
         if (target != null)
         {
             _lastShot = Time.time;
-            //var obj  = (Component)Instantiate(
-            //    MissilePrefab, transform.position,
-            //    Quaternion.LookRotation(target.transform.position - transform.position));
             var obj = Instantiate(MissilePrefab);
             obj.transform.position = transform.position;
             obj.transform.rotation = Quaternion.LookRotation(target.transform.position - transform.position);
 
-            var missile = obj.GetComponent<Missile>();
+            var missile = obj.GetComponent<Guided>();
             missile.Target = target.GetComponentInParent<Rigidbody>();
+
             Physics.IgnoreCollision(GetComponent<Collider>(), obj.GetComponent<Collider>());
         }
     }
