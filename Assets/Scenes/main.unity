@@ -165,7 +165,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Velocity: 8
-  MaxAngleChange: 2
+  MaxAcceleration: 5
+  Kp: 5
+  Ki: 0.2
+  Kd: 0.1
+  WaypointPrecision: 1
   Waypoints:
   - {fileID: 1450461988}
   - {fileID: 1624777284}
