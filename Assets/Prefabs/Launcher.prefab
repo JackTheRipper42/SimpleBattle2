@@ -67,5 +67,5 @@ MonoBehaviour:
   MaxHealth: 100
   IsVital: 0
   ReleadTime: 2
-  MissilePrefab: {fileID: 1000014207092808, guid: cd90803c98f9f1b4e82bdf0f8b96df01,
+  ProjectilePrefab: {fileID: 1000014207092808, guid: cd90803c98f9f1b4e82bdf0f8b96df01,
     type: 2}

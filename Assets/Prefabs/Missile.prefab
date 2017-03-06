@@ -140,6 +140,9 @@ MonoBehaviour:
   Damage: 10
   ExplosionDamage: 10
   ExplosionRange: 3
+  ShipLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &114000011561108292
 MonoBehaviour:
   m_ObjectHideFlags: 1

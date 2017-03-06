@@ -2,32 +2,12 @@
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-public class GunTurret : Subsystem
+public class GunTurret : Turret
 {
-    public float ReleadTime = 2f;
-    public GameObject ProjectilePrefab;
-
-    private float _lastShot;
-    private Ship _self;
-    private FlightGuidance _referenceData;
-
-    protected override void Start()
+    protected override void CalculateShot()
     {
-        base.Start();
-        _lastShot = float.MinValue;
-        _self = GetComponentInParent<Ship>();
-        _referenceData = ProjectilePrefab.GetComponent<FlightGuidance>();
-    }
-
-    protected virtual void Update()
-    {
-        if (Time.time < _lastShot + ReleadTime)
-        {
-            return;
-        }
-
         var target = FindObjectsOfType<Ship>()
-            .Where(ship => ship != _self)
+            .Where(ship => ship != Ship)
             .OrderBy(ship => (ship.transform.position - transform.position).magnitude)
             .FirstOrDefault();
 
@@ -37,11 +17,8 @@ public class GunTurret : Subsystem
             float impactTime;
             if (TryCalculatePointOfImpact(target.GetComponent<Rigidbody>(), out aimingPoint, out impactTime))
             {
-                _lastShot = Time.time;
-                var obj = Instantiate(ProjectilePrefab);
-                obj.transform.position = transform.position;
-                obj.transform.rotation = Quaternion.LookRotation(aimingPoint - transform.position);
-                var timeFuse = obj.GetComponent<TimeFuse>();
+                var projectile = Fire(aimingPoint);
+                var timeFuse = projectile.GetComponent<TimeFuse>();
                 if (timeFuse != null)
                 {
                     timeFuse.FuseTime = impactTime;
@@ -55,7 +32,7 @@ public class GunTurret : Subsystem
     {
         impactTime = CalculateImpactTime(target);
 
-        if (impactTime > 0 && impactTime <= _referenceData.MaxFlightTime)
+        if (impactTime > 0 && impactTime <= ReferenceData.MaxFlightTime)
         {
             targetPosition = target.position + target.velocity*impactTime;
             return true;
@@ -68,7 +45,7 @@ public class GunTurret : Subsystem
     {
         var relativePosition = target.position - transform.position;
 
-        var a = target.velocity.sqrMagnitude - _referenceData.Speed*_referenceData.Speed;
+        var a = target.velocity.sqrMagnitude - ReferenceData.Speed*ReferenceData.Speed;
         var b = 2f*Vector3.Dot(relativePosition, target.velocity);
         var c = relativePosition.sqrMagnitude;
 

@@ -1,50 +1,24 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-
-public class Launcher : Subsystem
+public class Launcher : Turret
 {
-    public float ReleadTime = 2f;
-    public GameObject MissilePrefab;
-
-    private float _lastShot;
-    private Ship _self;
-    private Guided _referenceData;
-
-    protected override void Start()
+    protected override void CalculateShot()
     {
-        base.Start();
-        _lastShot = float.MinValue;
-        _self = GetComponentInParent<Ship>();
-        _referenceData = MissilePrefab.GetComponent<Guided>();
-    }
-
-    protected virtual void Update()
-    {
-        if (Time.time < _lastShot + ReleadTime)
-        {
-            return;
-        }
-
         var target = FindObjectsOfType<Ship>()
-            .Where(ship => ship != _self)
+            .Where(ship => ship != Ship)
             .Where(ship =>
                 (ship.transform.position - transform.position).magnitude <
-                _referenceData.MaxFlightTime*_referenceData.Speed)
+                ReferenceData.MaxFlightTime*ReferenceData.Speed)
             .OrderBy(ship => (ship.transform.position - transform.position).magnitude)
             .FirstOrDefault();
 
         if (target != null)
         {
-            _lastShot = Time.time;
-            var obj = Instantiate(MissilePrefab);
-            obj.transform.position = transform.position;
-            obj.transform.rotation = Quaternion.LookRotation(target.transform.position - transform.position);
+            var missile = Fire(target.transform.position);
 
-            var missile = obj.GetComponent<Guided>();
-            missile.Target = target.GetComponentInParent<Rigidbody>();
-
-            Physics.IgnoreCollision(GetComponent<Collider>(), obj.GetComponent<Collider>());
+            var guidance = missile.GetComponent<Guided>();
+            guidance.Target = target.GetComponentInParent<Rigidbody>();
         }
     }
 }
