@@ -14,12 +14,14 @@ public class DummyFlight : MonoBehaviour
     private int _waypointIndex;
     private Vector3 _lastError;
     private Vector3 _sumError;
+    private Rigidbody _rigidbody;
 
     protected virtual void Start()
     {
         _waypointIndex = 0;
         _lastError = new Vector3();
         _sumError = new Vector3();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     protected virtual void FixedUpdate()
@@ -31,7 +33,7 @@ public class DummyFlight : MonoBehaviour
 
         var nextWayPoint = Waypoints[_waypointIndex];
 
-        var deltaX = nextWayPoint.position - Rigidbody.position;
+        var deltaX = nextWayPoint.position - _rigidbody.position;
 
         if (deltaX.magnitude < WaypointPrecision)
         {
@@ -39,7 +41,7 @@ public class DummyFlight : MonoBehaviour
             return;
         }
 
-        var currentVelocity = Rigidbody.velocity;
+        var currentVelocity = _rigidbody.velocity;
         var desiredVelocity = deltaX.normalized*Velocity;
 
         var error = desiredVelocity - currentVelocity;
@@ -48,21 +50,19 @@ public class DummyFlight : MonoBehaviour
                            Ki*Time.fixedDeltaTime*_sumError +
                            Kd*(error - _lastError)/Time.fixedDeltaTime;
 
-        Debug.DrawLine(Rigidbody.position, Rigidbody.position + acceleration, Color.red, Time.fixedDeltaTime);
+        Debug.DrawLine(_rigidbody.position, _rigidbody.position + acceleration, Color.red, Time.fixedDeltaTime);
 
         acceleration = new Vector3(
             Mathf.Clamp(acceleration.x, -MaxAcceleration, MaxAcceleration),
             Mathf.Clamp(acceleration.y, -MaxAcceleration, MaxAcceleration),
             Mathf.Clamp(acceleration.z, -MaxAcceleration, MaxAcceleration));
 
-        Debug.DrawLine(Rigidbody.position, Rigidbody.position + acceleration, Color.green, Time.fixedDeltaTime);
+        Debug.DrawLine(_rigidbody.position, _rigidbody.position + acceleration, Color.green, Time.fixedDeltaTime);
 
-        Rigidbody.AddForce(acceleration * Rigidbody.mass);
-        Rigidbody.rotation = Quaternion.LookRotation(Rigidbody.velocity.normalized);
-    }
-
-    protected Rigidbody Rigidbody
-    {
-        get { return GetComponent<Rigidbody>(); }
+        _rigidbody.AddForce(acceleration * _rigidbody.mass);
+        if (_rigidbody.velocity.sqrMagnitude > 0f)
+        {
+            _rigidbody.rotation = Quaternion.LookRotation(_rigidbody.velocity.normalized);
+        }
     }
 }
