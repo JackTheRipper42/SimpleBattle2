@@ -61,10 +61,14 @@ public class AiShipFlightControl : ShipFlightControl
 
         Debug.DrawLine(Rigidbody.position, Rigidbody.position + acceleration, Color.red, Time.fixedDeltaTime);
 
+        acceleration = Quaternion.Inverse(Rigidbody.rotation) * acceleration;
+
         acceleration = new Vector3(
             Mathf.Clamp(acceleration.x, -MaxAcceleration, MaxAcceleration),
             Mathf.Clamp(acceleration.y, -MaxAcceleration, MaxAcceleration),
             Mathf.Clamp(acceleration.z, -MaxAcceleration, MaxAcceleration));
+
+        acceleration = Rigidbody.rotation * acceleration;
 
         Debug.DrawLine(Rigidbody.position, Rigidbody.position + acceleration, Color.green, Time.fixedDeltaTime);
 

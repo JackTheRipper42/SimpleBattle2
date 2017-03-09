@@ -40,10 +40,14 @@ public class Guided : FlightGuidance
                                relativeVelocity.magnitude * missile.velocity.normalized,
                                rotationVector);
 
+        acceleration = Quaternion.Inverse(missile.rotation) * acceleration;
+
         acceleration = new Vector3(
             Mathf.Clamp(acceleration.x, -MaxAcceleration, MaxAcceleration),
             Mathf.Clamp(acceleration.y, -MaxAcceleration, MaxAcceleration),
             Mathf.Clamp(acceleration.z, -MaxAcceleration, MaxAcceleration));
+
+        acceleration = missile.rotation * acceleration;
 
         missile.AddForce(acceleration * missile.mass);
         missile.rotation = Quaternion.LookRotation(missile.velocity.normalized);
